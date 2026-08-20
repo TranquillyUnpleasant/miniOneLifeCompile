@@ -2,6 +2,28 @@
 set -ex
 cd "$(dirname "${0}")/.."
 
+if [[ "$1" = "macos" ]] || { [[ -z "$1" ]] && [[ "$(uname -s)" = "Darwin" ]]; }; then
+	if ! xcode-select -p > /dev/null 2>&1; then
+		xcode-select --install
+		echo "Rerun this script once the Command Line Tools have finished installing."
+		exit 1
+	fi
+
+	if ! command -v brew > /dev/null 2>&1; then
+		echo "Homebrew is required, install it from https://brew.sh"
+		exit 1
+	fi
+
+	brew install \
+		rsync wget \
+		imagemagick \
+		gnu-sed \
+		libpng \
+		sdl12-compat
+
+	exit 0
+fi
+
 if [[ "$1" = "arch" ]]; then
 	sudo pacman -Sy
 
