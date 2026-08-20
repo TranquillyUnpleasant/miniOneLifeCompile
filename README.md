@@ -24,6 +24,59 @@ Scripts to make 2HOL/OHOL client, server and editor.
 If you're stuck, you can join the 2HOL discord and ask for help there:) https://discord.gg/Jd9Es3f
 
 
+## Usage on macOS
+
+The steps above are written for WSL. On a Mac you skip the WSL parts and the
+scripts take care of the rest -- `getDependencies.sh` detects Darwin and
+installs the Homebrew packages, and the build scripts default to platform 2
+(native MacOS) instead of cross-compiling for Windows.
+
+1. Install [Homebrew](https://brew.sh) if you don't already have it. The
+   Xcode Command Line Tools are also needed; `./getDependencies.sh` will
+   kick off their install for you if they're missing.
+2. Make a folder for the project, `cd` into it, and clone this repo:
+   `git clone https://github.com/risvh/miniOneLifeCompile.git`
+3. `cd miniOneLifeCompile` -- every script in this repo expects to be run
+   from here.
+4. `./getDependencies.sh` (installs rsync, wget, imagemagick, gnu-sed,
+   libpng and sdl12-compat)
+5. `./cloneRepos.sh`
+6. `./applyFixesAndOverride.sh`
+7. `./server.sh` builds and starts the server. Ctrl+C to stop it for now.
+8. `./cleanOldBuildsAndOptionallyCaches.sh` then `./compile.sh` builds and
+   starts the client.
+9. If you want the editor: `./cleanOldBuildsAndOptionallyCaches.sh` then
+   `./editor.sh`.
+
+The binaries land in `../output/` as plain executables -- `OneLife`,
+`OneLifeServer` and `EditOneLife`, with no `.exe` and no `.app`. Run them
+from Terminal with `../output` as the working directory, since that's where
+the symlinked data folders live:
+
+```
+cd ../output
+./OneLife
+```
+
+Then follow steps 13 to 15 above for the server settings and pointing the
+client at `localhost:8005`.
+
+To build a distributable `.app` instead, use 2HOL's own packaging script
+once the client is compiled:
+
+```
+cd ../OneLife/build && mkdir -p mac
+./makeDistributionMacOSX vDEV AppleSiliconMacOSX
+```
+
+That bundles the Homebrew libraries into the app so it runs on Macs without
+Homebrew installed. Note it is only ad-hoc signed, so anyone who downloads
+it will need to clear the quarantine flag with
+`xattr -dr com.apple.quarantine <app>`.
+
+Discord integration is not available on macOS -- minorGems has no mac
+implementation for it, so the scripts leave it out of the build.
+
 ## Note 
 
 The scripts expect folder structure as below, you may want to clone this repo within a parent folder:
