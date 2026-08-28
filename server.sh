@@ -1,10 +1,16 @@
 #!/bin/bash
 set -e
 AUTORUN=$(cat AUTORUN)
+
+# MacOS builds natively as platform 2, so default to it there
+DEFAULT_PLATFORM=1
+if [[ "$(uname -s)" = "Darwin" ]]; then DEFAULT_PLATFORM=2; fi
+
 PLATFORM=$(cat PLATFORM_OVERRIDE)
-if [[ $PLATFORM != 1 ]] && [[ $PLATFORM != 5 ]]; then PLATFORM=${1-1}; fi
-if [[ $PLATFORM != 1 ]] && [[ $PLATFORM != 5 ]]; then
-	echo "Usage: 1 for Linux (Default), 5 for XCompiling for Windows"
+if [[ $PLATFORM != 1 ]] && [[ $PLATFORM != 2 ]] && [[ $PLATFORM != 5 ]]; then PLATFORM=${1-$DEFAULT_PLATFORM}; fi
+if [[ $PLATFORM != 1 ]] && [[ $PLATFORM != 2 ]] && [[ $PLATFORM != 5 ]]; then
+	echo "Usage: 1 for Linux, 2 for MacOS, 5 for XCompiling for Windows"
+	echo "Defaults to $DEFAULT_PLATFORM on this system"
 	exit 1
 fi
 pushd .
@@ -30,7 +36,7 @@ LINK="../OneLifeData7"
 ../miniOneLifeCompile/util/createSymLinks.sh $PLATFORM "$FOLDERS" $TARGET $LINK
 
 
-cp -rn ../OneLife/server/settings .
+rsync -r --ignore-existing ../OneLife/server/settings .
 
 cp ../OneLife/server/firstNames.txt .
 cp ../OneLife/server/lastNames.txt .
@@ -41,7 +47,7 @@ cp ../OneLifeData7/dataVersionNumber.txt .
 
 ##### Copy to Game Folder and Run
 if [[ $PLATFORM == 5 ]]; then mv ../OneLife/server/OneLifeServer.exe .; fi
-if [[ $PLATFORM == 1 ]]; then mv ../OneLife/server/OneLifeServer .; fi
+if [[ $PLATFORM == 1 ]] || [[ $PLATFORM == 2 ]]; then mv ../OneLife/server/OneLifeServer .; fi
 
 popd
 if [[ $AUTORUN == 1 ]]; then ./runServer.sh; fi
