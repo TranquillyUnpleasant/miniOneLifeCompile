@@ -6,7 +6,13 @@ cd ../miniOneLifeCompile
 ./compile.sh && (
 cd ..
 
-cp clientSettings/* output/settings
+if [ -d "client" ]; then
+    cp client/settings/* output/settings
+    cp client/settings/* clientSettings
+else
+    cp clientSettings/* output/settings
+fi
+
 rm -r client
 mv output client
 )
