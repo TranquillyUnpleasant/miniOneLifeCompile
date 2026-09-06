@@ -52,7 +52,12 @@ if [[ $PLATFORM == 5 ]] && [ ! -f SDL.dll ]; then cp ../OneLife/build/win32/SDL.
 
 ##### Copy to Game Folder
 if [[ $PLATFORM == 5 ]]; then cp -f ../OneLife/gameSource/EditOneLife.exe .; fi
-if [[ $PLATFORM == 1 ]] || [[ $PLATFORM == 2 ]]; then cp -f ../OneLife/gameSource/EditOneLife .; fi
+if [[ $PLATFORM == 1 ]] || [[ $PLATFORM == 2 ]]; then 
+cp -f ../OneLife/gameSource/EditOneLife .; 
+cd ../output
+./EditOneLife
+
+fi
 
 
 
