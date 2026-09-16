@@ -13,6 +13,7 @@ else
     cp clientSettings/* output/settings
 fi
 
-rm -r client
+rm -rf client
 mv output client
+cp -r custom-sprites/all/* client/sprites
 )
